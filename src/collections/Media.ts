@@ -33,10 +33,10 @@ const setPrefixFromMerk: CollectionBeforeChangeHook = async ({ data, req, operat
         // Stel de prefix in
         data.prefix = folderName
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Als het merk niet gevonden kan worden, gebruik de prefix die al is ingesteld
       // of laat het leeg (geen error gooien, gewoon doorgaan)
-      if (error?.status !== 404) {
+      if (error && typeof error === 'object' && 'status' in error && error.status !== 404) {
         // Alleen loggen als het geen 404 is (merk niet gevonden)
         console.error('Error setting prefix from merk:', error?.message || error)
       }
