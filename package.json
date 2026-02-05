@@ -15,11 +15,25 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "import:brands": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-brands.ts",
+    "clear:brands": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/clear-brands.ts",
+    "test:fabrics": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/test-import-fabrics.ts",
+    "clear:fabrics": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/clear-fabrics.ts",
+    "import:fabrics": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-fabrics.ts",
+    "import:finishes": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-finishes.ts",
+    "import:vullingen": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-vullingen.ts",
+    "import:products": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-products.ts",
+    "import:vormen": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-vormen.ts",
+    "clear:products": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/clear-products.ts",
+    "fix:products-db": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/fix-products-db.ts",
+    "truncate:products": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/truncate-products.ts"
   },
   "dependencies": {
+    "@payloadcms/db-postgres": "3.74.0",
     "@payloadcms/next": "3.74.0",
     "@payloadcms/richtext-lexical": "3.74.0",
+    "@payloadcms/storage-s3": "^3.74.0",
     "@payloadcms/ui": "3.74.0",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
@@ -28,8 +42,7 @@
     "payload": "3.74.0",
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "sharp": "0.34.2",
-    "@payloadcms/db-postgres": "3.74.0"
+    "sharp": "0.34.2"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",

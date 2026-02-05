@@ -69,6 +69,13 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    products: Product;
+    merken: Merken;
+    stoffen: Stoffen;
+    finishes: Finish;
+    'finish-rules': FinishRule;
+    vullingen: Vullingen;
+    vormen: Vorman;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,13 +85,20 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    merken: MerkenSelect<false> | MerkenSelect<true>;
+    stoffen: StoffenSelect<false> | StoffenSelect<true>;
+    finishes: FinishesSelect<false> | FinishesSelect<true>;
+    'finish-rules': FinishRulesSelect<false> | FinishRulesSelect<true>;
+    vullingen: VullingenSelect<false> | VullingenSelect<true>;
+    vormen: VormenSelect<false> | VormenSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {};
@@ -121,7 +135,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -145,8 +159,16 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
+  /**
+   * Het merk waartoe deze afbeelding behoort
+   */
+  merk?: (number | null) | Merken;
+  /**
+   * De folder naam voor deze afbeelding (wordt automatisch ingesteld op basis van merk)
+   */
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -161,10 +183,138 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "merken".
+ */
+export interface Merken {
+  id: number;
+  merknaam: string;
+  /**
+   * Standaard prijs voor dit merk
+   */
+  prijs?: number | null;
+  /**
+   * Korting in percentage of bedrag
+   */
+  korting?: number | null;
+  toepassing?: ('binnen' | 'buiten' | 'beide') | null;
+  beschrijving?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  /**
+   * Unieke identifier voor calculatie
+   */
+  uid: string;
+  name: string;
+  description?: string | null;
+  category?: ('zitkussen' | 'rugkussen' | 'overig') | null;
+  image?: (number | null) | Media;
+  active?: boolean | null;
+  /**
+   * Vormen die dit product ondersteunt
+   */
+  vormen?: (number | Vorman)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vormen".
+ */
+export interface Vorman {
+  id: number;
+  /**
+   * Unieke identifier voor de vorm (bijv. "rechthoekig", "rond")
+   */
+  key: string;
+  naam: string;
+  description?: string | null;
+  category?: ('zitkussen' | 'rugkussen' | 'overig') | null;
+  /**
+   * Pad naar het 3D model bestand
+   */
+  modelPath?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stoffen".
+ */
+export interface Stoffen {
+  id: number;
+  naam: string;
+  merk: number | Merken;
+  toepassing: 'binnen' | 'buiten' | 'beide';
+  kuntleder?: boolean | null;
+  /**
+   * Prijs in euro's per strekkende meter
+   */
+  prijsPerMeter: number;
+  afbeelding?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "finishes".
+ */
+export interface Finish {
+  id: number;
+  name: string;
+  description?: string | null;
+  image?: (number | null) | Media;
+  imageAlternative?: (number | null) | Media;
+  products?:
+    | ('zitstrak' | 'rugstrak' | 'rugplof' | 'zitplof' | 'rugschuinstrak' | 'sierrecht' | 'sier' | 'plank')[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "finish-rules".
+ */
+export interface FinishRule {
+  id: number;
+  finish: number | Finish;
+  /**
+   * Bijv. "0-100" of "101-150"
+   */
+  between: string;
+  price: number;
+  /**
+   * Automatisch gegenereerd label
+   */
+  ruleLabel?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vullingen".
+ */
+export interface Vullingen {
+  id: number;
+  title: string;
+  description?: string | null;
+  pricePerUnit: number;
+  afbeelding?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -181,20 +331,48 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'merken';
+        value: number | Merken;
+      } | null)
+    | ({
+        relationTo: 'stoffen';
+        value: number | Stoffen;
+      } | null)
+    | ({
+        relationTo: 'finishes';
+        value: number | Finish;
+      } | null)
+    | ({
+        relationTo: 'finish-rules';
+        value: number | FinishRule;
+      } | null)
+    | ({
+        relationTo: 'vullingen';
+        value: number | Vullingen;
+      } | null)
+    | ({
+        relationTo: 'vormen';
+        value: number | Vorman;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -204,10 +382,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -227,7 +405,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -261,6 +439,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  merk?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -272,6 +452,98 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  uid?: T;
+  name?: T;
+  description?: T;
+  category?: T;
+  image?: T;
+  active?: T;
+  vormen?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "merken_select".
+ */
+export interface MerkenSelect<T extends boolean = true> {
+  merknaam?: T;
+  prijs?: T;
+  korting?: T;
+  toepassing?: T;
+  beschrijving?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stoffen_select".
+ */
+export interface StoffenSelect<T extends boolean = true> {
+  naam?: T;
+  merk?: T;
+  toepassing?: T;
+  kuntleder?: T;
+  prijsPerMeter?: T;
+  afbeelding?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "finishes_select".
+ */
+export interface FinishesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  image?: T;
+  imageAlternative?: T;
+  products?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "finish-rules_select".
+ */
+export interface FinishRulesSelect<T extends boolean = true> {
+  finish?: T;
+  between?: T;
+  price?: T;
+  ruleLabel?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vullingen_select".
+ */
+export interface VullingenSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  pricePerUnit?: T;
+  afbeelding?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vormen_select".
+ */
+export interface VormenSelect<T extends boolean = true> {
+  key?: T;
+  naam?: T;
+  description?: T;
+  category?: T;
+  modelPath?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
