@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://test:test@localhost:5432/test' }}
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || 'test-secret' }}
+          MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT || 'http://localhost:9000' }}
+          MINIO_PUBLIC_ENDPOINT: ${{ secrets.MINIO_PUBLIC_ENDPOINT || 'http://localhost:9000' }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY || 'minioadmin' }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY || 'minioadmin' }}
+          MINIO_BUCKET: ${{ secrets.MINIO_BUCKET || 'media' }}
