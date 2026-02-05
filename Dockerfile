@@ -11,7 +11,10 @@ WORKDIR /app
 
 # Install dependencies - use npm install for flexibility
 COPY package.json package-lock.json* ./
-RUN npm install --legacy-peer-deps || npm install
+# Install all dependencies including optional ones (sharp needs to be installed as optional)
+RUN npm install --legacy-peer-deps --include=optional
+# Force sharp to use the correct platform binary for Alpine Linux (musl)
+RUN npm rebuild sharp || npm install --force --platform=linuxmusl --arch=x64 sharp@0.34.2
 
 
 # Rebuild the source code only when needed
