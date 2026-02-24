@@ -13,6 +13,9 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "check": "pnpm run lint && pnpm run build",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
+    "migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
@@ -34,7 +37,7 @@
     "@payloadcms/db-postgres": "3.74.0",
     "@payloadcms/next": "3.74.0",
     "@payloadcms/richtext-lexical": "3.74.0",
-    "@payloadcms/storage-s3": "^3.74.0",
+    "@payloadcms/storage-s3": "3.74.0",
     "@payloadcms/ui": "3.74.0",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
@@ -72,6 +75,10 @@
       "sharp",
       "esbuild",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "@payloadcms/ui": "3.74.0",
+      "@payloadcms/plugin-cloud-storage": "3.74.0"
+    }
   }
 }
