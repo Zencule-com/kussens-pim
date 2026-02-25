@@ -72,6 +72,8 @@ async function main() {
   console.log(`Cleaned up ${del.rowCount} old vormen rows from products_rels`)
 
   // 4. Backfill displayTitle on vormen (naam + category label)
+  await client.query(`ALTER TABLE "vormen" ADD COLUMN IF NOT EXISTS "display_title" varchar;`)
+
   const categoryLabels: Record<string, string> = {
     zitkussen: 'Zitkussen',
     rugkussen: 'Rugkussen',
