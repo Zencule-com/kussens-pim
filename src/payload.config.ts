@@ -1,7 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { buildConfig } from 'payload'
+import { buildConfig, type Config, type Plugin } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { nl } from 'payload/i18n/nl'
@@ -17,6 +17,31 @@ import { Finishes } from './collections/Finishes'
 import { FinishRules } from './collections/FinishRules'
 import { Vullingen } from './collections/Vullingen'
 import { Vormen } from './collections/Vormen'
+
+/**
+ * Workaround for Payload CMS bug with PostgreSQL serial IDs.
+ * The admin UI sends an empty/invalid id when creating new documents,
+ * which fails validation. This plugin strips the id before validation
+ * on create so PostgreSQL auto-generates it.
+ */
+const fixSerialIdValidation: Plugin = (config: Config): Config => ({
+  ...config,
+  collections: (config.collections || []).map((collection) => ({
+    ...collection,
+    hooks: {
+      ...collection.hooks,
+      beforeValidate: [
+        ...(collection.hooks?.beforeValidate || []),
+        ({ data, operation }) => {
+          if (operation === 'create' && data) {
+            delete data.id
+          }
+          return data
+        },
+      ],
+    },
+  })),
+})
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -45,6 +70,7 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    fixSerialIdValidation,
     s3Storage({
       alwaysInsertFields: true, // Zorgt ervoor dat prefix veld altijd beschikbaar is
       collections: {
