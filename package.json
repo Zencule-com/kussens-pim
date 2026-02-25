@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "build": "tsx scripts/migrate-vormen-array.ts && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
@@ -44,6 +44,7 @@
     "graphql": "^16.8.1",
     "next": "15.4.11",
     "payload": "3.77.0",
+    "pg": "^8.18.0",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "sharp": "0.34.2"
@@ -52,6 +53,7 @@
     "@playwright/test": "1.56.1",
     "@testing-library/react": "16.3.0",
     "@types/node": "^22.5.4",
+    "@types/pg": "^8.16.0",
     "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "4.5.2",
