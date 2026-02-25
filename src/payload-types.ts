@@ -104,9 +104,7 @@ export interface Config {
   globals: {};
   globalsSelect: {};
   locale: null;
-  user: User & {
-    collection: 'users';
-  };
+  user: User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -153,6 +151,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -219,7 +218,12 @@ export interface Product {
   /**
    * Vormen die dit product ondersteunt
    */
-  vormen?: (number | Vorman)[] | null;
+  vormen?:
+    | {
+        vorm: number | Vorman;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -464,7 +468,12 @@ export interface ProductsSelect<T extends boolean = true> {
   category?: T;
   image?: T;
   active?: T;
-  vormen?: T;
+  vormen?:
+    | T
+    | {
+        vorm?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

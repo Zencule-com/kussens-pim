@@ -1,5 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
+const CATEGORY_LABELS: Record<string, string> = {
+  zitkussen: 'Zitkussen',
+  rugkussen: 'Rugkussen',
+  overig: 'Overig',
+}
+
 export const Vormen: CollectionConfig = {
   slug: 'vormen',
   labels: {
@@ -7,7 +13,7 @@ export const Vormen: CollectionConfig = {
     plural: 'Vormen',
   },
   admin: {
-    useAsTitle: 'naam',
+    useAsTitle: 'displayTitle',
     defaultColumns: ['key', 'naam', 'category', 'updatedAt'],
     group: 'Producten',
   },
@@ -16,6 +22,17 @@ export const Vormen: CollectionConfig = {
     create: () => true,
     update: () => true,
     delete: () => true,
+  },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (data) {
+          const catLabel = CATEGORY_LABELS[data.category] || data.category || ''
+          data.displayTitle = catLabel ? `${data.naam} (${catLabel})` : data.naam
+        }
+        return data
+      },
+    ],
   },
   fields: [
     {
@@ -64,6 +81,14 @@ export const Vormen: CollectionConfig = {
       label: 'Model Pad',
       admin: {
         description: 'Pad naar het 3D model bestand',
+      },
+    },
+    {
+      name: 'displayTitle',
+      type: 'text',
+      label: 'Weergavetitel',
+      admin: {
+        hidden: true,
       },
     },
   ],

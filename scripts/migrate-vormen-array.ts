@@ -71,6 +71,20 @@ async function main() {
   const del = await client.query(`DELETE FROM "products_rels" WHERE "vormen_id" IS NOT NULL;`)
   console.log(`Cleaned up ${del.rowCount} old vormen rows from products_rels`)
 
+  // 4. Backfill displayTitle on vormen (naam + category label)
+  const categoryLabels: Record<string, string> = {
+    zitkussen: 'Zitkussen',
+    rugkussen: 'Rugkussen',
+    overig: 'Overig',
+  }
+  const vormen = await client.query(`SELECT id, naam, category FROM vormen WHERE display_title IS NULL OR display_title = ''`)
+  for (const row of vormen.rows) {
+    const catLabel = categoryLabels[row.category] || row.category || ''
+    const displayTitle = catLabel ? `${row.naam} (${catLabel})` : row.naam
+    await client.query(`UPDATE vormen SET display_title = $1 WHERE id = $2`, [displayTitle, row.id])
+  }
+  console.log(`Backfilled displayTitle for ${vormen.rowCount} vormen`)
+
   await client.end()
   console.log('Migration complete')
 }
