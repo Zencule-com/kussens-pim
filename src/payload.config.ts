@@ -38,7 +38,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
-    idType: 'number',
+    idType: 'serial',
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
