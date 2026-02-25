@@ -79,9 +79,6 @@ export const Products: CollectionConfig = {
       admin: {
         description: 'Vormen die dit product ondersteunt',
       },
-      // Skip client-side validation — it incorrectly rejects integer IDs
-      // because the db adapter's defaultIDType isn't available in the browser
-      validate: () => true,
     },
   ],
   timestamps: true,
