@@ -74,6 +74,10 @@ export const Products: CollectionConfig = {
       name: 'vormen',
       type: 'array',
       label: 'Vormen',
+      labels: {
+        singular: 'Vorm',
+        plural: 'Vormen',
+      },
       admin: {
         description: 'Vormen die dit product ondersteunt',
       },
