@@ -72,13 +72,20 @@ export const Products: CollectionConfig = {
     },
     {
       name: 'vormen',
-      type: 'relationship',
-      relationTo: 'vormen',
-      hasMany: true,
+      type: 'array',
       label: 'Vormen',
       admin: {
         description: 'Vormen die dit product ondersteunt',
       },
+      fields: [
+        {
+          name: 'vorm',
+          type: 'relationship',
+          relationTo: 'vormen',
+          required: true,
+          label: 'Vorm',
+        },
+      ],
     },
   ],
   timestamps: true,
