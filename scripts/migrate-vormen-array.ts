@@ -87,6 +87,60 @@ async function main() {
   }
   console.log(`Backfilled displayTitle for ${vormen.rowCount} vormen`)
 
+  // 5. Add fields and default_dims columns for dimension config
+  await client.query(`ALTER TABLE "vormen" ADD COLUMN IF NOT EXISTS "fields" jsonb;`)
+  await client.query(`ALTER TABLE "vormen" ADD COLUMN IF NOT EXISTS "default_dims" jsonb;`)
+
+  // Seed dimension data for shapes that don't have it yet
+  const SHAPE_DIMENSIONS: Record<string, { fields: object; defaultDims: object }> = {
+    rechthoekig: {
+      fields: { length: true, depth: true, thickness: true },
+      defaultDims: { length: 50, depth: 50, thickness: 10 },
+    },
+    rond: {
+      fields: { diameter: true, thickness: true },
+      defaultDims: { diameter: 50, thickness: 10 },
+    },
+    'rug-schuin': {
+      fields: { lengthUpper: true, lengthLower: true, height: true, thickness: true },
+      defaultDims: { lengthUpper: 30, lengthLower: 50, height: 50, thickness: 10 },
+    },
+    'schuine-zijde-links': {
+      fields: { lengthBack: true, lengthFront: true, depth: true, thickness: true },
+      defaultDims: { lengthBack: 50, lengthFront: 30, depth: 50, thickness: 10 },
+    },
+    'schuine-zijde-rechts': {
+      fields: { lengthBack: true, lengthFront: true, depth: true, thickness: true },
+      defaultDims: { lengthBack: 50, lengthFront: 30, depth: 50, thickness: 10 },
+    },
+    'plof-kussen': {
+      fields: { length: true, depth: true },
+      defaultDims: { length: 60, depth: 60, thickness: 7 },
+    },
+    sier: {
+      fields: { length: true, depth: true, thickness: true },
+      defaultDims: { length: 45, depth: 45, thickness: 5 },
+    },
+    'sier-rechthoekig': {
+      fields: { length: true, depth: true, thickness: true },
+      defaultDims: { length: 50, depth: 30, thickness: 5 },
+    },
+    kussenopplank: {
+      fields: { length: true, depth: true, thickness: true },
+      defaultDims: { length: 50, depth: 50, thickness: 10 },
+    },
+  }
+
+  let seededCount = 0
+  for (const [key, dims] of Object.entries(SHAPE_DIMENSIONS)) {
+    const res = await client.query(
+      `UPDATE vormen SET fields = $1, default_dims = $2 WHERE key = $3 AND (fields IS NULL OR default_dims IS NULL)`,
+      [JSON.stringify(dims.fields), JSON.stringify(dims.defaultDims), key],
+    )
+    if (res.rowCount && res.rowCount > 0) seededCount++
+  }
+  console.log(`Seeded dimension data for ${seededCount} vormen`)
+
   await client.end()
   console.log('Migration complete')
 }
