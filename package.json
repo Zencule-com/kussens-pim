@@ -31,7 +31,10 @@
     "import:vormen": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/import-vormen.ts",
     "clear:products": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/clear-products.ts",
     "fix:products-db": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/fix-products-db.ts",
-    "truncate:products": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/truncate-products.ts"
+    "truncate:products": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/truncate-products.ts",
+    "seed:dimensions": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed-vormen-dimensions.ts",
+    "upload:models": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/upload-models.ts",
+    "upload:models:remote": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/upload-models-remote.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.77.0",

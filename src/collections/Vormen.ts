@@ -84,6 +84,20 @@ export const Vormen: CollectionConfig = {
       },
     },
     {
+      name: 'fields',
+      type: 'json',
+      admin: {
+        description: 'Which dimension inputs to show, e.g. {"length":true,"depth":true,"thickness":true}',
+      },
+    },
+    {
+      name: 'defaultDims',
+      type: 'json',
+      admin: {
+        description: 'Default dimension values in cm, e.g. {"length":50,"depth":50,"thickness":10}',
+      },
+    },
+    {
       name: 'displayTitle',
       type: 'text',
       label: 'Weergavetitel',
