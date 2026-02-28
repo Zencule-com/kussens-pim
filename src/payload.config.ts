@@ -17,6 +17,7 @@ import { Finishes } from './collections/Finishes'
 import { FinishRules } from './collections/FinishRules'
 import { Vullingen } from './collections/Vullingen'
 import { Vormen } from './collections/Vormen'
+import { Reviews } from './collections/Reviews'
 
 /**
  * Workaround for Payload CMS bug with PostgreSQL serial IDs.
@@ -56,7 +57,7 @@ export default buildConfig({
   i18n: {
     supportedLanguages: { nl, en },
   },
-  collections: [Users, Media, Products, Merken, Stoffen, Finishes, FinishRules, Vullingen, Vormen],
+  collections: [Users, Media, Products, Merken, Stoffen, Finishes, FinishRules, Vullingen, Vormen, Reviews],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
