@@ -48,6 +48,10 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  // Allow cross-origin requests (the kussens.nu 3D-configurator loads fabric
+  // media as WebGL textures, which require CORS headers; without them THREE.js
+  // can't use the texture and the preview doesn't update).
+  cors: '*',
   admin: {
     user: Users.slug,
     importMap: {
